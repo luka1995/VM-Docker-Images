@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  jupyter:
+    container_name: jupyter
+    image: jupyter/pyspark-notebook
+    restart: always
+    user: root
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=jupyter.dodonaanalytics.com, www.jupyter.dodonaanalytics.com
+      - LETSENCRYPT_HOST=jupyter.dodonaanalytics.com, www.jupyter.dodonaanalytics.com
+      - LETSENCRYPT_EMAIL=dodona-virtual-machine@dodonaanalytics.com
+    volumes:
+      - type: bind
+        source: /home/workspace
+        target: /home/jovyan/workspace
+    command: "start-notebook.sh --NotebookApp.port='80' --NotebookApp.token='' --NotebookApp.password='sha1:...' --NotebookApp.quit_button='False'"
+    networks:
+      - nginx.docker
+
+networks:
+  nginx.docker:
+    name: nginx.docker
+    external: true
