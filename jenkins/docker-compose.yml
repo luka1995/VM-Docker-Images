@@ -6,28 +6,30 @@ services:
     restart: always
     user: root
     volumes:
-      - /home/jenkins:/var/jenkins_home
+      - /root/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/local/bin/docker:/usr/local/bin/docker
       - /usr/bin/docker:/usr/bin/docker
       - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
-    expose:
-      - 80
+    ports:
+      - 8899:8899
     environment:
-      - JENKINS_OPTS="--httpPort=80"
-      - VIRTUAL_HOST=jenkins.dodonaanalytics.com, www.jenkins.dodonaanalytics.com
-    networks:
-      - nginx.docker
+      - JENKINS_OPTS="--httpPort=8899"
+#      - VIRTUAL_HOST=jenkins.dodonaanalytics.com, www.jenkins.dodonaanalytics.com
+#    networks:
+#      - nginx.docker
+
   jenkins-socat:
     container_name: jenkins-socat
     image: alpine/socat
+    restart: always
     ports:
       - 2375:2375
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
-
-networks:
-  nginx.docker:
-    name: nginx.docker
-    external: true
+    
+#networks:
+#  nginx.docker:
+#    name: nginx.docker
+#    external: true
